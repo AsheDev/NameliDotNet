@@ -101,9 +101,10 @@ namespace NameliDotNet.Tests
         }
 
         [TestMethod]
-        public void AddressLineOne()
+        public void Addresses()
         {
             string addressLineOne = Nameli.AddressLineOne();
+            if (string.IsNullOrWhiteSpace(addressLineOne)) Assert.Fail();
 
             //List<string> one = new List<string>();
             //for (int n = 0; n < 300; ++n)
@@ -111,6 +112,13 @@ namespace NameliDotNet.Tests
             //    one.Add(Nameli.AddressLineOne());
             //}
             //int count = one.Count;
+        }
+
+        [TestMethod]
+        public void City()
+        {
+            string city = Nameli.City();
+            if (string.IsNullOrWhiteSpace(city)) Assert.Fail();
         }
 
         [TestMethod]

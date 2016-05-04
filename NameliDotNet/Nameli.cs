@@ -91,6 +91,15 @@ namespace NameliDotNet
         }
 
         /// <summary>
+        /// Generates a city name
+        /// </summary>
+        /// <returns></returns>
+        public virtual string City()
+        {
+            return _nameGen.CreateName(_warehouse.GetUSCityNames());
+        }
+
+        /// <summary>
         /// Retrieves a list of States including territories 
         /// and commonwealths
         /// </summary>
