@@ -1,9 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using System.Reflection; // I really need to use the other one :/
+using System.Text;
 using System.Collections.Generic;
-using Microsoft.VisualBasic.FileIO;
 
 namespace NameliDotNet
 {
@@ -26,7 +24,7 @@ namespace NameliDotNet
         /// </summary>
         /// <param name="names"></param>
         /// <returns>A name.</returns>
-        internal string CreateFirstName(IList<string> names)
+        internal string CreateName(IList<string> names)
         {
             if(!names.Any()) throw new ArgumentNullException("List of names provided to generator is empty!");
 
@@ -48,15 +46,19 @@ namespace NameliDotNet
             _order = order;
             _minLength = minLength;
 
+            StringBuilder builder = new StringBuilder();
+
             // Build the chains
             foreach (string word in _samples)
             {
-                for (int letter = 0; letter < word.Length - order; letter++)
+                for (int letter = 0; letter < (word.Length - order); ++letter)
                 {
                     string token = word.Substring(letter, order);
                     List<char> entry = null;
                     if (_chains.ContainsKey(token))
+                    {
                         entry = _chains[token];
+                    }
                     else
                     {
                         entry = new List<char>();

@@ -33,6 +33,64 @@ namespace NameliDotNet.Tests
         }
 
         [TestMethod]
+        public void LastName()
+        {
+            string lastname = Nameli.LastName();
+            if (string.IsNullOrWhiteSpace(lastname)) Assert.Fail();
+
+            //List<string> names = new List<string>();
+            //for (int n = 0; n < 300; ++n)
+            //{
+            //    names.Add(Nameli.LastName());
+            //}
+            //int count = names.Count;
+        }
+
+        [TestMethod]
+        public void FirstAndLast()
+        {
+            string firstAndLast = Nameli.FirstAndLast(NameliGender.Male);
+            if (string.IsNullOrWhiteSpace(firstAndLast)) Assert.Fail();
+            if (!firstAndLast.Contains(" ")) Assert.Fail();
+        }
+
+        [TestMethod]
+        public void LastAndFirst()
+        {
+            string lastAndFirst = Nameli.LastAndFirst(NameliGender.Female);
+            if (string.IsNullOrWhiteSpace(lastAndFirst)) Assert.Fail();
+            if (!lastAndFirst.Contains(" ")) Assert.Fail();
+        }
+
+        [TestMethod]
+        public void StateAbbrev()
+        {
+            string abbrev = Nameli.StateAbbr();
+            if (string.IsNullOrWhiteSpace(abbrev)) Assert.Fail();
+
+            //List<string> abbrevs = new List<string>();
+            //for (int n = 0; n < 300; ++n)
+            //{
+            //    abbrevs.Add(Nameli.StateAbbr());
+            //}
+            //int count = abbrevs.Count;
+        }
+
+        [TestMethod]
+        public void State()
+        {
+            string state = Nameli.State();
+            if (string.IsNullOrWhiteSpace(state)) Assert.Fail();
+
+            //List<string> states = new List<string>();
+            //for (int n = 0; n < 300; ++n)
+            //{
+            //    states.Add(Nameli.State());
+            //}
+            //int count = states.Count;
+        }
+
+        [TestMethod]
         public void PhoneNumber()
         {
             string phone = Nameli.Phone();

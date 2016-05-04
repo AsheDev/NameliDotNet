@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 
@@ -28,22 +29,38 @@ namespace NameliDotNet
         public virtual string FirstName(NameliGender gender = 0)
         {
             if (gender == NameliGender.Random) gender = (NameliGender)_random.Next(1, 4);
-            return _nameGen.CreateFirstName(DetermineNames(gender));
+            return _nameGen.CreateName(DetermineNames(gender));
         }
 
-        public virtual string LastName(NameliGender gender = 0)
+        /// <summary>
+        /// Generate a person's last name
+        /// </summary>
+        /// <returns></returns>
+        public virtual string LastName()
         {
-            return "";
+            return _nameGen.CreateName(_warehouse.GetUSSurnames());
         }
 
+        /// <summary>
+        /// Generate the first and last name of a person
+        /// </summary>
+        /// <param name="gender">The gender associated with the first name</param>
+        /// <returns></returns>
         public virtual string FirstAndLast(NameliGender gender = 0)
         {
-            return FirstName() + " " + LastName();
+            if (gender == NameliGender.Random) gender = (NameliGender)_random.Next(1, 4);
+            return FirstName(gender) + " " + LastName();
         }
 
+        /// <summary>
+        /// Generate the first and last name of a person
+        /// </summary>
+        /// <param name="gender">The gender associated with the first name</param>
+        /// <returns></returns>
         public virtual string LastAndFirst(NameliGender gender = 0)
         {
-            return LastName() + ", " + FirstName();
+            if (gender == NameliGender.Random) gender = (NameliGender)_random.Next(1, 4);
+            return LastName() + ", " + FirstName(gender);
         }
 
         /// <summary>
@@ -73,9 +90,28 @@ namespace NameliDotNet
             return AddressLineOne() + " " + AddressLineTwo();
         }
 
+        /// <summary>
+        /// Retrieves a list of States including territories 
+        /// and commonwealths
+        /// </summary>
+        /// <returns></returns>
         public virtual string State()
         {
-            return "North Carolina";
+            IList<string> states = _warehouse.GetUSStates();
+            return states[_random.Next(0, states.Count)];
+        }
+
+        /// <summary>
+        /// Retrieve the abbreviation associated with a state
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        public virtual string GetStateAbbreviation(string state)
+        {
+            throw new NotImplementedException();
+            //if (string.IsNullOrWhiteSpace(state)) throw new ArgumentNullException("No value was passed to Nameli.GetStateAbbreviation method");
+            //IList<string> abbrevs = _warehouse.GetUSStateAbbrevs();
+            //abbrev = _warehouse.GetUSStateAbbrevs().FirstOrDefault(a => a == abbrev.ToUpper());
         }
 
         public virtual string County()
@@ -83,9 +119,25 @@ namespace NameliDotNet
             return "Cork";
         }
 
+        /// <summary>
+        /// Retrieves a list of State abbreviations including 
+        /// territories and commonwealths
+        /// </summary>
+        /// <returns></returns>
         public virtual string StateAbbr()
         {
-            return "NC";
+            IList<string> abbrevs = _warehouse.GetUSStateAbbrevs();
+            return abbrevs[_random.Next(0, abbrevs.Count)];
+        }
+
+        /// <summary>
+        /// Retrieve the state associated with an abbreviation
+        /// </summary>
+        /// <param name="abbrev"></param>
+        /// <returns></returns>
+        public virtual string GetAbbreviationState(string abbrev)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -109,8 +161,18 @@ namespace NameliDotNet
             return build.ToString();
         }
 
-        public virtual string Email()
+        public virtual string Email(string name = null)
         {
+            if(string.IsNullOrWhiteSpace(name))
+            {
+                // make up a name
+            }
+            else
+            {
+                // use the name and maybe randomize it a bit
+            }
+
+            // create a list of domains for the emails
             return "";
         }
 
