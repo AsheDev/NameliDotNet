@@ -34,7 +34,7 @@ namespace NameliDotNet
             int minLength = 4;
             int baseOrder = ((_random.Next(0, 2) == 1)) ? 4 + 1 : 4 - 1; // 4 seems to be a sweet spot so we mix it up by doing plus or minus 1
             Generator(baseOrder, minLength);
-            return FirstLetterToUpper(NextName);
+            return NextName.FirstCharToUpper();
         }
 
         // I think this is the problem area when it comes to threads
@@ -140,16 +140,6 @@ namespace NameliDotNet
             List<char> letters = _chains[value];
             int randomNumber = _random.Next(letters.Count);
             return letters[randomNumber];
-        }
-
-        // TODO
-        // move this, it doesn't really belong
-        // make extension method
-        private string FirstLetterToUpper(string str)
-        {
-            if (string.IsNullOrWhiteSpace(str)) return null;
-            if (str.Length > 1) return char.ToUpper(str[0]) + str.Substring(1);
-            return str.ToUpper();
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using NameliDotNet;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace NameliDotNet.Tests
 {
@@ -30,6 +30,16 @@ namespace NameliDotNet.Tests
             //    names.Add(Nameli.FirstName(NameliGender.Female));
             //}
             //int count = names.Count;
+        }
+
+        [TestMethod]
+        public void PhoneNumber()
+        {
+            string phone = Nameli.Phone();
+            if (string.IsNullOrWhiteSpace(phone)) Assert.Fail();
+
+            phone = Nameli.Phone(true);
+            if (string.IsNullOrWhiteSpace(phone)) Assert.Fail();
         }
 
         [TestMethod]
