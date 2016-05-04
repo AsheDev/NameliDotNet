@@ -13,6 +13,7 @@ Once instantiated Nameli has a number of methods to help generate data:
 * AddressLineOne
 * AddressLineTwo
 * StreetAddress
+* City
 * State
 * StateAbbreviation
 * County
