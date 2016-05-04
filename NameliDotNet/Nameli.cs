@@ -77,7 +77,7 @@ namespace NameliDotNet
 
         public virtual string AddressLineOne()
         {
-            return "";
+            return _nameGen.CreateName(_warehouse.GetStreetNames());
         }
 
         public virtual string AddressLineTwo()
@@ -117,6 +117,11 @@ namespace NameliDotNet
         public virtual string County()
         {
             return "Cork";
+        }
+
+        public virtual string Country()
+        {
+            return "USA";
         }
 
         /// <summary>

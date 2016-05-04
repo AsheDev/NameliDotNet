@@ -24,12 +24,12 @@ namespace NameliDotNet.Tests
             string femaleFirst = Nameli.FirstName(NameliGender.Female);
             if (string.IsNullOrWhiteSpace(femaleFirst)) Assert.Fail();
 
-            //List<string> names = new List<string>();
-            //for(int n = 0; n < 300; ++n)
-            //{
-            //    names.Add(Nameli.FirstName(NameliGender.Female));
-            //}
-            //int count = names.Count;
+            List<string> names = new List<string>();
+            for (int n = 0; n < 300; ++n)
+            {
+                names.Add(Nameli.FirstName(NameliGender.Female));
+            }
+            int count = names.Count;
         }
 
         [TestMethod]
@@ -101,10 +101,24 @@ namespace NameliDotNet.Tests
         }
 
         [TestMethod]
+        public void AddressLineOne()
+        {
+            string addressLineOne = Nameli.AddressLineOne();
+
+            //List<string> one = new List<string>();
+            //for (int n = 0; n < 300; ++n)
+            //{
+            //    one.Add(Nameli.AddressLineOne());
+            //}
+            //int count = one.Count;
+        }
+
+        [TestMethod]
         public void SocialSecurityNumber()
         {
             string ssn = Nameli.SocialSecurityNumber();
             Assert.AreNotEqual(ssn.Length, 0);
+            Assert.AreEqual(ssn.Length, 11);
         }
 
         [TestMethod]
