@@ -6,14 +6,15 @@ namespace NameliDotNet
 {
     public class Nameli
     {
-        private NameliLocale _locale;
-        private Random _random;
-        private NameGenerator _nameGen;
-        private Warehouse _warehouse;
+        protected NameliLocale _locale;
+        protected Random _random;
+        internal NameGenerator _nameGen;
+        internal Warehouse _warehouse;
 
         public Nameli(NameliLocale locale)
         {
-            _locale = locale;
+            //_locale = locale;
+            _locale = NameliLocale.UnitedStates; // 1st iteration focuses on one region
             _random = new Random();
             _nameGen = new NameGenerator(_random);
             _warehouse = new Warehouse();
