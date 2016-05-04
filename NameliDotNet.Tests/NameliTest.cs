@@ -106,6 +106,13 @@ namespace NameliDotNet.Tests
             string addressLineOne = Nameli.AddressLineOne();
             if (string.IsNullOrWhiteSpace(addressLineOne)) Assert.Fail();
 
+            string addressLineTwo = Nameli.AddressLineTwo();
+            if (string.IsNullOrWhiteSpace(addressLineTwo)) Assert.Fail();
+
+            string streetAddress = Nameli.StreetAddress();
+            if (string.IsNullOrWhiteSpace(streetAddress)) Assert.Fail();
+            //!!!! "Ion Street W Lane, MA 23922"
+
             //List<string> one = new List<string>();
             //for (int n = 0; n < 300; ++n)
             //{

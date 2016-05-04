@@ -82,7 +82,11 @@ namespace NameliDotNet
 
         public virtual string AddressLineTwo()
         {
-            return "";
+            StringBuilder builder = new StringBuilder();
+            builder.Append(City() + ", ");
+            builder.Append(StateAbbr() + " ");
+            builder.Append(Zip());
+            return builder.ToString();
         }
 
         public virtual string StreetAddress()
