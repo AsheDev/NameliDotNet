@@ -123,8 +123,11 @@ namespace NameliDotNet.Tests
             string addressLineTwo = Nameli.AddressLineTwo();
             if (string.IsNullOrWhiteSpace(addressLineTwo)) Assert.Fail();
 
-            string streetAddress = Nameli.StreetAddress();
-            if (string.IsNullOrWhiteSpace(streetAddress)) Assert.Fail();
+            string shipping = Nameli.ShippingAddress();
+            if (string.IsNullOrWhiteSpace(shipping)) Assert.Fail();
+
+            string shippingCountry = Nameli.ShippingAddress(true);
+            if (string.IsNullOrWhiteSpace(shipping)) Assert.Fail();
             // Sweet! "Ion Street W Lane, MA 23922"
 
             List<string> bulk = new List<string>();

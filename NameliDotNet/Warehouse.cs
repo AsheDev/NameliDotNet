@@ -25,6 +25,28 @@ namespace NameliDotNet
             };
             return list;
         }
+
+        // this index should match the locale enum values (-1)
+        internal IList<string> GetCountriesFull()
+        {
+            IList<string> list = new List<string>
+            {
+                "United States",
+                "Great Britain"
+            };
+            return list;
+        }
+
+        // this index should match the locale enum values (-1)
+        internal IList<string> GetCountriesAbbreviated()
+        {
+            IList<string> list = new List<string>
+            {
+                "USA",
+                "GB"
+            };
+            return list;
+        }
         #endregion
 
         #region United States

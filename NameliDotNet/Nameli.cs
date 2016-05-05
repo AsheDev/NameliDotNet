@@ -76,11 +76,23 @@ namespace NameliDotNet
             return DateTime.Now.AddYears(-age).AddMonths(-_random.Next(0, 12)).AddDays(-_random.Next(0, 32));
         }
 
+        /// <summary>
+        /// Generates a basic street address.
+        /// </summary>
+        /// <returns></returns>
         public virtual string AddressLineOne()
         {
             return _nameGen.CreateName(_warehouse.GetStreetNames());
         }
 
+        /// <summary>
+        /// Generates the city, state, and zip of a 
+        /// street address.
+        /// </summary>
+        /// <remarks>Note, this doesn't yet account for 
+        /// foreign countries and how they may handle 
+        /// this differently than the US.</remarks>
+        /// <returns></returns>
         public virtual string AddressLineTwo()
         {
             StringBuilder builder = new StringBuilder();
@@ -90,9 +102,18 @@ namespace NameliDotNet
             return builder.ToString();
         }
 
-        public virtual string StreetAddress()
+        /// <summary>
+        /// Generates a full shipping address.
+        /// </summary>
+        /// <returns></returns>
+        public virtual string ShippingAddress(bool includeCountry = false)
         {
-            return AddressLineOne() + " " + AddressLineTwo();
+            string address = AddressLineOne() + " " + AddressLineTwo();
+            if(includeCountry)
+            {
+                address += (Convert.ToBoolean(_random.Next(0, 2))) ? " " + Country() : " " + CountryAbbreviated();
+            }
+            return address;
         }
 
         /// <summary>
@@ -133,9 +154,24 @@ namespace NameliDotNet
             return "Cork";
         }
 
+        /// <summary>
+        /// Retrieve the name of the country for the currently 
+        /// defined locale.
+        /// </summary>
+        /// <returns></returns>
         public virtual string Country()
         {
-            return "USA";
+            return _warehouse.GetCountriesFull()[(int)_locale];
+        }
+
+        /// <summary>
+        /// Retrieve the abbreviated form of the country for the 
+        /// currently defined locale.
+        /// </summary>
+        /// <returns></returns>
+        public virtual string CountryAbbreviated()
+        {
+            return _warehouse.GetCountriesAbbreviated()[(int)_locale];
         }
 
         /// <summary>
@@ -149,11 +185,6 @@ namespace NameliDotNet
             return abbrevs[_random.Next(0, abbrevs.Count)];
         }
 
-        /// <summary>
-        /// Retrieve the state associated with an abbreviation
-        /// </summary>
-        /// <param name="abbrev"></param>
-        /// <returns></returns>
         public virtual string GetAbbreviationState(string abbrev)
         {
             throw new NotImplementedException();
@@ -200,7 +231,7 @@ namespace NameliDotNet
         }
 
         /// <summary>
-        /// 
+        /// Generates a phone number
         /// </summary>
         /// <param name="includeAreaCode"></param>
         /// <returns></returns>
