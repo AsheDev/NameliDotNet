@@ -28,7 +28,8 @@ namespace NameliDotNet
         /// <returns></returns>
         public virtual string FirstName(NameliGender gender = 0)
         {
-            if (gender == NameliGender.Random) gender = (NameliGender)_random.Next(1, 4);
+            //if (gender == NameliGender.Random) gender = (NameliGender)_random.Next(1, 4);
+            if (gender == NameliGender.Random) gender = NameliGender.Male;
             return _nameGen.CreateName(DetermineNames(gender));
         }
 
@@ -179,19 +180,23 @@ namespace NameliDotNet
             return build.ToString();
         }
 
+        /// <summary>
+        /// Generate a user's email.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public virtual string Email(string name = null)
         {
-            if(string.IsNullOrWhiteSpace(name))
+            bool includeNumber = Convert.ToBoolean(_random.Next(0, 2));
+            if (string.IsNullOrWhiteSpace(name))
             {
-                // make up a name
-            }
-            else
-            {
-                // use the name and maybe randomize it a bit
+                name = (Convert.ToBoolean(_random.Next(0, 2))) ? FirstName() : LastAndFirst();
             }
 
-            // create a list of domains for the emails
-            return "";
+            name = name.Replace(", ", "").Replace("-", "");
+            if (includeNumber) name += _random.Next(76, 2732).ToString();
+            IList<string> domains = _warehouse.GetUSEmailDomains();
+            return name = (name + "@" + domains[_random.Next(0, domains.Count)]).ToLower();
         }
 
         /// <summary>
@@ -201,7 +206,6 @@ namespace NameliDotNet
         /// <returns></returns>
         public virtual string Phone(bool includeAreaCode = false)
         {
-            // TODO: needs locale support!
             List<string> separators = new List<string> { ".", "-" };
 
             StringBuilder builder = new StringBuilder();
@@ -210,7 +214,7 @@ namespace NameliDotNet
             builder.Append(separator);
             builder.Append(_random.Next(2361, 7982).ToString());
 
-            if(includeAreaCode)
+            if (includeAreaCode)
             {
                 bool braces = Convert.ToBoolean(_random.Next(0, 2));
                 if (braces)
@@ -278,7 +282,7 @@ namespace NameliDotNet
                             nameSeed = _warehouse.GetUSFemaleNames();
                             break;
                         default: // NameliGender.Other
-                            throw new NotImplementedException("Haven't gotten here yet!");
+                            nameSeed = _warehouse.GetUSNeutralNames();
                             break;
                     }
                     break;

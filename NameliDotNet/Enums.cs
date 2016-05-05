@@ -4,7 +4,7 @@
     public enum NameliLocale
     {
         UnitedStates = 0,
-        GreatBritain = 1
+        UnitedKingdom = 1
     }
 
     public enum NameliGender

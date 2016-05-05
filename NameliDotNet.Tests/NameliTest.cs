@@ -101,6 +101,20 @@ namespace NameliDotNet.Tests
         }
 
         [TestMethod]
+        public void Email()
+        {
+            string email = Nameli.Email();
+            if (string.IsNullOrWhiteSpace(email)) Assert.Fail();
+
+            List<string> bulk = new List<string>();
+            for (int n = 0; n < 300; ++n)
+            {
+                bulk.Add(Nameli.Email());
+            }
+            Assert.AreEqual(bulk.Count, 300);
+        }
+
+        [TestMethod]
         public void Addresses()
         {
             string addressLineOne = Nameli.AddressLineOne();
@@ -111,14 +125,14 @@ namespace NameliDotNet.Tests
 
             string streetAddress = Nameli.StreetAddress();
             if (string.IsNullOrWhiteSpace(streetAddress)) Assert.Fail();
-            //!!!! "Ion Street W Lane, MA 23922"
+            // Sweet! "Ion Street W Lane, MA 23922"
 
-            //List<string> one = new List<string>();
-            //for (int n = 0; n < 300; ++n)
-            //{
-            //    one.Add(Nameli.AddressLineOne());
-            //}
-            //int count = one.Count;
+            List<string> bulk = new List<string>();
+            for (int n = 0; n < 300; ++n)
+            {
+                bulk.Add(Nameli.AddressLineOne());
+            }
+            Assert.AreEqual(bulk.Count, 300);
         }
 
         [TestMethod]

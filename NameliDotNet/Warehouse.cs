@@ -4,6 +4,30 @@ namespace NameliDotNet
 {
     internal class Warehouse
     {
+        #region Generic
+        internal IList<string> GetEmailDomains()
+        {
+            IList<string> list = new List<string>
+            {
+                "aol.com",
+                "facebook.com", 
+                "gmail.com", 
+                "gmx.com", 
+                "hotmail.com", 
+                "hotmail.co.uk", 
+                "mac.com", 
+                "me.com", 
+                "mail.com", 
+                "msn.com",
+                "live.com", 
+                "sbcglobal.net", 
+                "yahoo.com"
+            };
+            return list;
+        }
+        #endregion
+
+        #region United States
         internal IList<string> GetUSMaleNames()
         {
             IList<string> names = new List<string>
@@ -602,6 +626,89 @@ namespace NameliDotNet
                 "francesca",
                 "gabriela",
                 "jessie"
+            };
+            return names;
+        }
+
+        internal IList<string> GetUSNeutralNames()
+        {
+            // Some more of these would be great
+            IList<string> names = new List<string>
+            {
+                "Landry",
+                "Azariah",
+                "Oakley",
+                "Lennon",
+                "Charlie",
+                "Skyler",
+                "Dakota",
+                "Armani",
+                "Phoenix",
+                "Justice",
+                "Casey",
+                "Emory",
+                "Remy",
+                "Emerson",
+                "Amari",
+                "Hayden",
+                "River",
+                "Milan",
+                "Tatum",
+                "Jessie",
+                "Finley",
+                "Riley",
+                "Rowan",
+                "Sage",
+                "Jamie",
+                "Rory",
+                "Harley",
+                "Leighton",
+                "Peyton",
+                "Dallas",
+                "Remington",
+                "Quinn",
+                "Alexis",
+                "Sawyer",
+                "Kamryn",
+                "Parker",
+                "Avery",
+                "Eden",
+                "Lyric",
+                "Elliot",
+                "Elliott",
+                "Reese",
+                "Zion",
+                "Rylan",
+                "Jordan",
+                "Angel",
+                "Taylor",
+                "Emery",
+                "Payton",
+                "Teagan",
+                "Marley",
+                "Morgan",
+                "London",
+                "Ariel",
+                "Karter",
+                "Kendall",
+                "Kai",
+                "Blake",
+                "Jordyn",
+                "Rylee",
+                "Skylar",
+                "Kayden",
+                "Dylan",
+                "Cameron",
+                "Micah",
+                "Reagan",
+                "Ryan",
+                "Logan",
+                "Jayden",
+                "Hunter",
+                "Harper",
+                "Carter",
+                "Clover",
+                "Ripley"
             };
             return names;
         }
@@ -1888,5 +1995,51 @@ namespace NameliDotNet
             };
             return cities;
         }
+
+        internal IList<string> GetUSEmailDomains()
+        {
+            IList<string> list = new List<string>
+            {
+                "bellsouth.net", 
+                "charter.net", 
+                "comcast.net", 
+                "cox.net", 
+                "earthlink.net", 
+                "juno.com",
+                "verizon.net",
+                "snet.net",
+                "swbell.net",
+                "att.net",
+                "comcast.net",
+                "charter.net"
+            };
+            return list;
+        }
+        #endregion
+
+        #region United Kingdom
+        internal IList<string> GetUKEmailDomains()
+        {
+            IList<string> list = new List<string>
+            {
+                "btinternet.com", 
+                "virginmedia.com", 
+                "blueyonder.co.uk", 
+                "freeserve.co.uk", 
+                "live.co.uk",
+                "ntlworld.com", 
+                "o2.co.uk", 
+                "orange.net", 
+                "sky.com", 
+                "talktalk.co.uk", 
+                "tiscali.co.uk",
+                "virgin.net",
+                "wanadoo.co.uk", 
+                "bt.com",
+                "yahoo.co.uk"
+            };
+            return list;
+        }
+        #endregion
     }
 }

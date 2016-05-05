@@ -76,7 +76,7 @@ namespace NameliDotNet
         /// <returns></returns>
         private string NewName()
         {
-            // TODO: use a StringBuilder. Seriously.
+            // Try out a stringbuilder
             // Get a random token from somewhere in middle of sample word  
             //StringBuilder name = new StringBuilder();  
             string name = "";
