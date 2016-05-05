@@ -283,13 +283,12 @@ namespace NameliDotNet
             return builder.ToString();
         }
 
+        // this guy needs some work (rethinking)
         // break this out into a specialized class?
         public virtual string CompanyName()
         {
-            return "";
+            return _nameGen.CreateName(_warehouse.GetCompanyNames());
         }
-
-
 
         /// <summary>
         /// Determines which list of names to be using based on locale 

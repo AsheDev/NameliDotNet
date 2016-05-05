@@ -24,12 +24,15 @@ namespace NameliDotNet.Tests
             string femaleFirst = Nameli.FirstName(NameliGender.Female);
             if (string.IsNullOrWhiteSpace(femaleFirst)) Assert.Fail();
 
-            List<string> names = new List<string>();
+            string other = Nameli.FirstName(NameliGender.Other);
+            if (string.IsNullOrWhiteSpace(other)) Assert.Fail();
+
+            List<string> bulk = new List<string>();
             for (int n = 0; n < 300; ++n)
             {
-                names.Add(Nameli.FirstName(NameliGender.Female));
+                bulk.Add(Nameli.FirstName(NameliGender.Female));
             }
-            int count = names.Count;
+            Assert.AreEqual(bulk.Count, 300);
         }
 
         [TestMethod]
@@ -38,12 +41,12 @@ namespace NameliDotNet.Tests
             string lastname = Nameli.LastName();
             if (string.IsNullOrWhiteSpace(lastname)) Assert.Fail();
 
-            //List<string> names = new List<string>();
-            //for (int n = 0; n < 300; ++n)
-            //{
-            //    names.Add(Nameli.LastName());
-            //}
-            //int count = names.Count;
+            List<string> bulk = new List<string>();
+            for (int n = 0; n < 300; ++n)
+            {
+                bulk.Add(Nameli.LastName());
+            }
+            Assert.AreEqual(bulk.Count, 300);
         }
 
         [TestMethod]
@@ -164,6 +167,13 @@ namespace NameliDotNet.Tests
 
             birthDate = Nameli.BirthDay(200);
             Assert.AreNotEqual(birthDate, DateTime.Now);
+        }
+
+        [TestMethod]
+        public void CompanyName()
+        {
+            string name = Nameli.CompanyName();
+            if (string.IsNullOrWhiteSpace(name)) Assert.Fail();
         }
     }
 }
