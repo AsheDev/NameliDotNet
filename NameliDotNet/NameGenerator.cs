@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace NameliDotNet
 {
-    internal class NameGenerator
+    public sealed class NameGenerator
     {
         private int _order;
         private int _minLength;
@@ -24,7 +24,7 @@ namespace NameliDotNet
         /// </summary>
         /// <param name="names"></param>
         /// <returns>A name.</returns>
-        internal string CreateName(IList<string> names)
+        public string CreateName(IList<string> names)
         {
             if(!names.Any()) throw new ArgumentNullException("List of names provided to generator is empty!");
 

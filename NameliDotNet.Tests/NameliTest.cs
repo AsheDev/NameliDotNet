@@ -70,13 +70,6 @@ namespace NameliDotNet.Tests
         {
             string abbrev = Nameli.StateAbbr();
             if (string.IsNullOrWhiteSpace(abbrev)) Assert.Fail();
-
-            //List<string> abbrevs = new List<string>();
-            //for (int n = 0; n < 300; ++n)
-            //{
-            //    abbrevs.Add(Nameli.StateAbbr());
-            //}
-            //int count = abbrevs.Count;
         }
 
         [TestMethod]
@@ -84,13 +77,6 @@ namespace NameliDotNet.Tests
         {
             string state = Nameli.State();
             if (string.IsNullOrWhiteSpace(state)) Assert.Fail();
-
-            //List<string> states = new List<string>();
-            //for (int n = 0; n < 300; ++n)
-            //{
-            //    states.Add(Nameli.State());
-            //}
-            //int count = states.Count;
         }
 
         [TestMethod]
@@ -101,6 +87,13 @@ namespace NameliDotNet.Tests
 
             phone = Nameli.Phone(true);
             if (string.IsNullOrWhiteSpace(phone)) Assert.Fail();
+
+            List<string> bulk = new List<string>();
+            for (int n = 0; n < 300; ++n)
+            {
+                bulk.Add(Nameli.Phone());
+            }
+            Assert.AreEqual(bulk.Count, 300);
         }
 
         [TestMethod]
@@ -146,6 +139,13 @@ namespace NameliDotNet.Tests
         {
             string city = Nameli.City();
             if (string.IsNullOrWhiteSpace(city)) Assert.Fail();
+
+            List<string> bulk = new List<string>();
+            for (int n = 0; n < 300; ++n)
+            {
+                bulk.Add(Nameli.City());
+            }
+            Assert.AreEqual(bulk.Count, 300);
         }
 
         [TestMethod]
@@ -154,6 +154,13 @@ namespace NameliDotNet.Tests
             string ssn = Nameli.SocialSecurityNumber();
             Assert.AreNotEqual(ssn.Length, 0);
             Assert.AreEqual(ssn.Length, 11);
+
+            List<string> bulk = new List<string>();
+            for (int n = 0; n < 300; ++n)
+            {
+                bulk.Add(Nameli.SocialSecurityNumber());
+            }
+            Assert.AreEqual(bulk.Count, 300);
         }
 
         [TestMethod]
@@ -174,6 +181,20 @@ namespace NameliDotNet.Tests
         {
             string name = Nameli.CompanyName();
             if (string.IsNullOrWhiteSpace(name)) Assert.Fail();
+
+            List<string> bulk = new List<string>();
+            for (int n = 0; n < 300; ++n)
+            {
+                bulk.Add(Nameli.CompanyName());
+            }
+            Assert.AreEqual(bulk.Count, 300);
+        }
+
+        [TestMethod]
+        public void StringGenerator()
+        {
+            Test test = new Test();
+            string text = test.Generate(25);
         }
     }
 }
