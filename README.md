@@ -24,7 +24,7 @@ Once instantiated Nameli has a number of methods to help generate data:
 * SocialSecurityNumber
 
 ## Going Forward
-I would like to add a few more features as this goes along but what's listed, I believe, is a decent aim for version 1.
+I would like to add a few more features as this goes along but what's listed, I believe, is a decent aim for version 1. Also, the algorithm for the markov chaining isn't perfect and will likely see revisions in the future, but currently it's a solid first-pass.
 
 ## Contributing
 Feel free! Jump in, give a hand, and let's get something great going!
