@@ -196,5 +196,13 @@ namespace NameliDotNet.Tests
             Test test = new Test();
             string text = test.Generate(25);
         }
+
+        [TestMethod]
+        public void MyOwnImplementation()
+        {
+            TestTwo two = new TestTwo(3);
+            // 2, 1, 1 means 1 word has 50% the next 25% and the other 25%
+            string text = two.BuildSentence();
+        }
     }
 }
