@@ -10,7 +10,7 @@ namespace NameliDotNet
         private int _order;
         private int _minLength;
         private Random _random { get; set; }
-        private IList<string> _used = new List<string>();
+        //private IList<string> _used = new List<string>();
         private IList<string> _samples = new List<string>();
         private IDictionary<string, List<char>> _chains = new Dictionary<string, List<char>>();
 
@@ -125,8 +125,9 @@ namespace NameliDotNet
                 }
                 //Console.WriteLine("\nLength: " + s.Length);
             }
-            while (_used.Contains(name) || name.Length < _minLength);
-            _used.Add(name);
+            while (name.Length < _minLength);
+            //while (_used.Contains(name) || name.Length < _minLength) ;
+            //_used.Add(name);
             return name;
         }
 

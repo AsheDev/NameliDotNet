@@ -300,4 +300,219 @@ namespace NameliDotNet
             }
         }
     }
+
+    public abstract class MarkovBase
+    {
+        internal Random _random;
+        internal IList<Matches> _matches;
+        internal IList<string> _words;
+        internal int _scope;
+
+        public MarkovBase()
+        {
+            _random = new Random();
+            _matches = new List<Matches>();
+            _words = new List<string>();
+        }
+
+        public abstract string GenerateText();
+    }
+
+    public class MarkovPhrases : MarkovBase
+    {
+        public MarkovPhrases(IList<string> words, int scope = 1)
+        {
+            _words = words;
+            _scope = scope;
+            ConstructMatches();
+        }
+
+        public override string GenerateText()
+        {
+            StringBuilder starterText = new StringBuilder();
+            int startIndex = _random.Next(0, _words.Count - _scope);
+            for (int x = 0; x < _scope; ++x)
+            {
+                starterText.Append(_words[startIndex]);
+                if (x < (_scope - 1)) starterText.Append(" ");
+                ++startIndex;
+            }
+
+            StringBuilder finalText = new StringBuilder();
+            finalText.Append(starterText + " ");
+            int periodCount = 0;
+            for (int n = 0; n < 125; ++n)
+            {
+                Matches match = _matches.FirstOrDefault(m => m.Text.ToUpper().Equals(starterText.ToString().ToUpper()));
+                if (ReferenceEquals(match, null)) throw new ApplicationException("TODO!");
+
+                string nextWord = match.FollowedBy[_random.Next(0, match.FollowedBy.Count)];
+                if (nextWord.Contains('.')) ++periodCount;
+                finalText.Append(nextWord);
+                if (periodCount < 4 || n < 125) finalText.Append(" ");
+                if (periodCount >= 4) break;
+
+                starterText.Clear();
+                if (_scope > 1)
+                {
+                    IList<string> temp = match.Text.Split(' ').ToList();
+                    temp.RemoveAt(0);
+                    starterText.Append(string.Join(" ", temp.ToArray()) + " ");
+                    starterText.Append(nextWord);
+                }
+                else
+                {
+                    starterText.Append(nextWord);
+                }
+            }
+
+            return finalText.ToString();
+        }
+
+        private void ConstructMatches()
+        {
+            for (int n = 0; n < (_words.Count - _scope); ++n)
+            {
+                StringBuilder currentText = new StringBuilder();
+                for (int x = n; x < (_scope + n); ++x)
+                {
+                    currentText.Append(_words[x]);
+                    if ((x + 1) < (_scope + n)) currentText.Append(" ");
+                }
+
+                Matches match = _matches.FirstOrDefault(m => m.Text.ToUpper().Equals(currentText.ToString().ToUpper()));
+                if (!ReferenceEquals(match, null))
+                {
+                    match.FollowedBy.Add(_words[n + _scope]);
+                    _matches.Add(match);
+                }
+                else
+                {
+                    match = new Matches();
+                    match.Text = currentText.ToString();
+                    match.FollowedBy = new List<string> { _words[n + _scope] };
+                    _matches.Add(match);
+                }
+            }
+        }
+    }
+
+    // TODO: I wonder if I could "weight" which first letter gets chosen so we find a great starting spot
+    public class MarkovWords : MarkovBase
+    {
+        private int _minLength; // TODO
+        //private IList<string> _used = new List<string>(); // TODO
+        private IDictionary<string, List<char>> _chains = new Dictionary<string, List<char>>(); // TODO
+
+        public MarkovWords(IList<string> words, int scope = 1)
+        {
+            _words = words;
+            _scope = (scope < 1) ? 1 : scope;
+            ConstructMatches();
+
+            // TODO
+            _minLength = 4;
+        }
+
+        public override string GenerateText()
+        {
+            // Try out a stringbuilder
+            // Get a random token from somewhere in middle of sample word  
+            //StringBuilder name = new StringBuilder();  
+            string name = "";
+            do
+            {
+                // could we sort the _chains so we could more popular letters to begin with?
+                // this orders _chains by chunks of text that occur most frequently
+                //var checkIt = _chains.OrderByDescending(c => c.Value.Count);
+
+                int value = _random.Next(_words.Count); // snag a random word's index
+                int nameLength = _words[value].Length;
+                if (nameLength < _scope) _scope = nameLength;
+                name = _words[value].Substring(_random.Next(0, nameLength - _scope), _scope);
+                if (name.Length == _minLength) break;
+
+                while (name.Length < nameLength) // should add a bit of variablity to this
+                {
+                    string token = name.Substring(name.Length - _scope, _scope);
+                    char character = GetLetter(token);
+                    if (character != '?')
+                    {
+                        //name += GetLetter(token);
+                        name += character;
+                    }
+                    else
+                    {
+                        break; // end of the line
+                    }
+                }
+
+                if (name.Contains(" "))
+                {
+                    string[] tokens = name.Split(' ');
+                    name = "";
+                    for (int t = 0; t < tokens.Length; t++)
+                    {
+                        if (tokens[t] == "") continue;
+                        if (tokens[t].Length == 1)
+                        {
+                            tokens[t] = tokens[t].ToUpper();
+                        }
+                        else
+                        {
+                            tokens[t] = tokens[t].Substring(0, 1) + tokens[t].Substring(1).ToLower();
+                        }
+                        if (name != "") name += " ";
+                        name += tokens[t];
+                    }
+                }
+                else
+                {
+                    name = name.Substring(0, 1).ToUpper() + name.Substring(1).ToLower();
+                }
+                //Console.WriteLine("\nLength: " + s.Length);
+            }
+            while (name.Length < _minLength);
+            //while (_used.Contains(name) || name.Length < _minLength) ;
+            //_used.Add(name);
+            return name;
+        }
+
+        private char GetLetter(string value)
+        {
+            if (!_chains.ContainsKey(value)) return '?';
+            List<char> letters = _chains[value];
+            int randomNumber = _random.Next(letters.Count);
+            return letters[randomNumber];
+        }
+
+        private void ConstructMatches()
+        {
+            // fix the parameter values
+            //if (_scope < 1) _scope = 1;
+            //if (minLength < 1) minLength = 1;
+
+            //_minLength = minLength;
+            
+            // Build the chains
+            foreach (string word in _words)
+            {
+                for (int letter = 0; letter < (word.Length - _scope); ++letter)
+                {
+                    string token = word.Substring(letter, _scope);
+                    List<char> entry = null;
+                    if (_chains.ContainsKey(token))
+                    {
+                        entry = _chains[token];
+                    }
+                    else
+                    {
+                        entry = new List<char>();
+                        _chains[token] = entry;
+                    }
+                    entry.Add(word[letter + _scope]);
+                }
+            }
+        }
+    }
 }
