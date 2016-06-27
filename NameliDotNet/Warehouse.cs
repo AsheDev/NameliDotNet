@@ -2,7 +2,7 @@
 
 namespace NameliDotNet
 {
-    internal class Warehouse
+    public class Warehouse
     {
         #region Generic
         internal IList<string> GetEmailDomains()
@@ -319,7 +319,7 @@ namespace NameliDotNet
         #endregion
 
         #region United States
-        internal IList<string> GetUSMaleNames()
+        public IList<string> GetUSMaleNames()
         {
             IList<string> names = new List<string>
             {
