@@ -14,13 +14,12 @@ namespace NameliDotNet
         internal IStrategy _strategy;
         internal Warehouse _warehouse;
 
-        private IList<Matches> _firstNames;
-
         /// <summary>
-        /// 
+        /// The Nameli generator class. The strategy and locale options default to USA to 
+        /// keep barrier of entry low.
         /// </summary>
-        /// <param name="locale"></param>
-        /// <param name="strategy"></param>
+        /// <param name="locale">The locale to be used when generating random text.</param>
+        /// <param name="strategy">The strategy, or algorithm, to be employed in generating random text.</param>
         public Nameli(IStrategy strategy = null, NameliLocale locale = NameliLocale.UnitedStates)
         {
             _strategy = (!ReferenceEquals(strategy, null)) ? strategy : new OriginalWordStrategy(); 
@@ -29,6 +28,11 @@ namespace NameliDotNet
             _warehouse = new Warehouse();
         }
 
+        /// <summary>
+        /// Facilitates the changing of the text generation algorithm without the 
+        /// need of creating a new instance of the class.
+        /// </summary>
+        /// <param name="strategy">The strategy, or algorithm, to be employed in generating random text.</param>
         public void ChangeStrategy(IStrategy strategy)
         {
             if (ReferenceEquals(strategy, null)) throw new ArgumentNullException("Error encountered while changing strategies. Strategy may not be null.");
@@ -36,9 +40,10 @@ namespace NameliDotNet
         }
 
         /// <summary>
-        /// This does nothing currently.
+        /// Allows the locale of the text generation to be changed without having to 
+        /// create a new instance of the Nameli class.
         /// </summary>
-        /// <param name="locale"></param>
+        /// <param name="locale">The locale to be used when generating random text.</param>
         public void ChangeLocale(NameliLocale locale)
         {
             // 1st iteration focuses on one region
@@ -49,7 +54,7 @@ namespace NameliDotNet
         /// <summary>
         /// Generate a person's first name
         /// </summary>
-        /// <param name="gender">The gender associated with the first name</param>
+        /// <param name="gender">The gender associated with the first name. Does not need to be provided.</param>
         /// <returns></returns>
         public virtual string FirstName(NameliGender gender = 0)
         {
@@ -79,7 +84,7 @@ namespace NameliDotNet
         /// <summary>
         /// Generate the first and last name of a person
         /// </summary>
-        /// <param name="gender">The gender associated with the first name</param>
+        /// <param name="gender">The gender associated with the first name. Does not need to be provided.</param>
         /// <returns></returns>
         public virtual string FirstAndLast(NameliGender gender = 0)
         {
@@ -88,9 +93,9 @@ namespace NameliDotNet
         }
 
         /// <summary>
-        /// Generate the first and last name of a person
+        /// Generate the first and last name of a person.
         /// </summary>
-        /// <param name="gender">The gender associated with the first name</param>
+        /// <param name="gender">The gender associated with the first name. Does not need to be provided.</param>
         /// <returns></returns>
         public virtual string LastAndFirst(NameliGender gender = 0)
         {
@@ -129,11 +134,9 @@ namespace NameliDotNet
         }
 
         /// <summary>
-        /// Generates the city, state, and zip of a 
-        /// street address.
+        /// Generates the city, state, and zip of a street address.
         /// </summary>
-        /// <remarks>Note, this doesn't yet account for 
-        /// foreign countries and how they may handle 
+        /// <remarks>Note, this doesn't yet account for foreign countries and how they may handle 
         /// this differently than the US.</remarks>
         /// <returns></returns>
         public virtual string AddressLineTwo()
@@ -160,7 +163,7 @@ namespace NameliDotNet
         }
 
         /// <summary>
-        /// Generates a city name
+        /// Generates a city name. Future versions will take advantage of the specified locale.
         /// </summary>
         /// <returns></returns>
         public virtual string City()
@@ -177,8 +180,7 @@ namespace NameliDotNet
         }
 
         /// <summary>
-        /// Retrieves a list of States including territories 
-        /// and commonwealths
+        /// Retrieves a list of States including territories and commonwealths.
         /// </summary>
         /// <returns></returns>
         public virtual string State()
@@ -194,9 +196,9 @@ namespace NameliDotNet
         }
 
         /// <summary>
-        /// Retrieve the abbreviation associated with a state
+        /// Retrieve the abbreviation associated with a state.
         /// </summary>
-        /// <param name="state"></param>
+        /// <param name="state">TODO</param>
         /// <returns></returns>
         public virtual string GetStateAbbreviation(string state)
         {
@@ -206,14 +208,17 @@ namespace NameliDotNet
             //abbrev = _warehouse.GetUSStateAbbrevs().FirstOrDefault(a => a == abbrev.ToUpper());
         }
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <returns></returns>
         public virtual string County()
         {
             return "Cork"; // heh
         }
 
         /// <summary>
-        /// Retrieve the name of the country for the currently 
-        /// defined locale.
+        /// Retrieve the name of the country for the currently defined locale.
         /// </summary>
         /// <returns></returns>
         public virtual string Country()
@@ -222,8 +227,7 @@ namespace NameliDotNet
         }
 
         /// <summary>
-        /// Retrieve the abbreviated form of the country for the 
-        /// currently defined locale.
+        /// Retrieve the abbreviated form of the country for the currently defined locale.
         /// </summary>
         /// <returns></returns>
         public virtual string CountryAbbreviated()
@@ -232,8 +236,7 @@ namespace NameliDotNet
         }
 
         /// <summary>
-        /// Retrieves a list of State abbreviations including 
-        /// territories and commonwealths
+        /// Retrieves a list of State abbreviations including territories and commonwealths
         /// </summary>
         /// <returns></returns>
         public virtual string StateAbbr()
@@ -248,6 +251,11 @@ namespace NameliDotNet
             return seed[_random.Next(0, seed.Count)];
         }
 
+        /// <summary>
+        /// TODO
+        /// </summary>
+        /// <param name="abbrev">TODO</param>
+        /// <returns></returns>
         public virtual string GetAbbreviationState(string abbrev)
         {
             throw new NotImplementedException("In process. Sorry!");
@@ -256,7 +264,8 @@ namespace NameliDotNet
         /// <summary>
         /// Generate a zip code.
         /// </summary>
-        /// <param name="includePlusFour">Indicate whether to include the "+4 code" appended to the zip.</param>
+        /// <param name="includePlusFour">Indicate whether to include the "+4 code" appended to the zip. 
+        /// This is generally isolated to the United States.</param>
         /// <returns></returns>
         public virtual string Zip(bool includePlusFour = false)
         {
@@ -277,7 +286,7 @@ namespace NameliDotNet
         /// <summary>
         /// Generate a user's email.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">The name of the user may be provided but may be left blank to be auto generated.</param>
         /// <returns></returns>
         public virtual string Email(string name = null)
         {
@@ -300,9 +309,9 @@ namespace NameliDotNet
         }
 
         /// <summary>
-        /// Generates a phone number
+        /// Generates a phone number. In the future this method will take advantage of localization.
         /// </summary>
-        /// <param name="includeAreaCode"></param>
+        /// <param name="includeAreaCode">Defaults to false. If True will append a United States area code to the number.</param>
         /// <returns></returns>
         public virtual string Phone(bool includeAreaCode = false)
         {
@@ -334,7 +343,7 @@ namespace NameliDotNet
         }
 
         /// <summary>
-        /// Generate a Social Security Number
+        /// Generate a United States Social Security Number.
         /// </summary>
         /// <returns></returns>
         public virtual string SocialSecurityNumber()
