@@ -42,9 +42,37 @@ namespace NameliDotNet.Strategies
         {
             if (!_samples.Any()) throw new ArgumentNullException("List of names provided to generator is empty!");
 
-            int minLength = 4;
-            int baseOrder = ((_random.Next(0, 2) == 1)) ? 4 + 1 : 4 - 1; // 4 seems to be a sweet spot so we mix it up by doing plus or minus 1
-            ConstructChains(baseOrder, minLength);
+            _minLength = 4;
+            _order = ((_random.Next(0, 2) == 1)) ? 4 + 1 : 4 - 1; // 4 seems to be a sweet spot so we mix it up by doing plus or minus 1
+            ConstructChains();
+            //if(_chains.FirstOrDefault().Key.Length != _order)
+            //{
+
+            //}
+
+
+            // this is a weird bug :|
+            while(_chains.FirstOrDefault().Key.Length != _order)
+            {
+                _chains.Clear();
+                ConstructChains();
+            }
+
+
+            if (_chains.FirstOrDefault().Key.Length != _order)
+            {
+                int flag = 0;
+                ++flag;
+                //_chains.Clear();
+                //ConstructChains();
+                //if (_chains.FirstOrDefault().Key.Length != _order)
+                //{
+                //    int test = 0;
+                //    ++test;
+                //}
+            }
+
+
             return NewName().FirstCharToUpper();
         }
 
@@ -53,21 +81,14 @@ namespace NameliDotNet.Strategies
         /// </summary>
         /// <param name="order"></param>
         /// <param name="minLength"></param>
-        private void ConstructChains(int order, int minLength)
+        private void ConstructChains()
         {
-            // fix the parameter values
-            if (order < 1) order = 1;
-            if (minLength < 1) minLength = 1;
-
-            _order = order;
-            _minLength = minLength;
-
             // Build the chains
             foreach (string word in _samples)
             {
-                for (int letter = 0; letter < (word.Length - order); ++letter)
+                for (int letter = 0; letter < (word.Length - _order); ++letter)
                 {
-                    string token = word.Substring(letter, order);
+                    string token = word.Substring(letter, _order);
                     List<char> entry = null;
                     if (_chains.ContainsKey(token))
                     {
@@ -78,7 +99,7 @@ namespace NameliDotNet.Strategies
                         entry = new List<char>();
                         _chains[token] = entry;
                     }
-                    entry.Add(word[letter + order]);
+                    entry.Add(word[letter + _order]);
                 }
             }
         }
@@ -90,14 +111,14 @@ namespace NameliDotNet.Strategies
         private string NewName()
         {
             // Try out a stringbuilder
-            // Get a random token from somewhere in middle of sample word  
-            //StringBuilder name = new StringBuilder();  
             string name = "";
+            int safety = 0;
             do
             {
                 int value = _random.Next(_samples.Count);
                 int nameLength = _samples[value].Length;
-                if (nameLength < _order) _order = nameLength;
+                //if (nameLength < _order) _order = nameLength; // I think this is the culprit
+                if (nameLength < _order) continue;
                 name = _samples[value].Substring(_random.Next(0, nameLength - _order), _order);
                 while (name.Length < nameLength)
                 {

@@ -328,7 +328,7 @@ namespace NameliDotNet
         #endregion
 
         #region United States
-        public IList<string> GetUSMaleNames()
+        internal IList<string> GetUSMaleNames()
         {
             IList<string> names = new List<string>
             {
