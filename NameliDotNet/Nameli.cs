@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using NameliDotNet.Interfaces;
+using NameliDotNet.Strategies;
 using System.Collections.Generic;
 
 namespace NameliDotNet
@@ -9,16 +11,33 @@ namespace NameliDotNet
     {
         protected NameliLocale _locale;
         protected Random _random;
-        internal NameGenerator _nameGen;
+        internal IStrategy _strategy;
         internal Warehouse _warehouse;
 
-        public Nameli(NameliLocale locale)
+        public Nameli(IStrategy strategy, NameliLocale locale)
         {
-            //_locale = locale;
+            if (ReferenceEquals(strategy, null)) throw new ArgumentNullException("Error encountered in Nameli constructor. Strategy may not be null.");
+            _strategy = strategy;
             _locale = NameliLocale.UnitedStates; // 1st iteration focuses on one region
             _random = new Random();
-            _nameGen = new NameGenerator(_random);
             _warehouse = new Warehouse();
+        }
+
+        public void ChangeStrategy(IStrategy strategy)
+        {
+            if (ReferenceEquals(strategy, null)) throw new ArgumentNullException("Error encountered while changing strategies. Strategy may not be null.");
+            _strategy = strategy;
+        }
+
+        /// <summary>
+        /// This does nothing currently.
+        /// </summary>
+        /// <param name="locale"></param>
+        public void ChangeLocale(NameliLocale locale)
+        {
+            // 1st iteration focuses on one region
+            // so it's being overwritten for the time being
+            _locale = NameliLocale.UnitedStates;
         }
 
         /// <summary>
@@ -30,7 +49,8 @@ namespace NameliDotNet
         {
             //if (gender == NameliGender.Random) gender = (NameliGender)_random.Next(1, 4);
             if (gender == NameliGender.Random) gender = NameliGender.Male;
-            return _nameGen.CreateName(DetermineNames(gender));
+            _strategy.SetSourceText(DetermineNames(gender));
+            return _strategy.GenerateText();
         }
 
         /// <summary>
@@ -39,7 +59,8 @@ namespace NameliDotNet
         /// <returns></returns>
         public virtual string LastName()
         {
-            return _nameGen.CreateName(_warehouse.GetUSSurnames());
+            _strategy.SetSourceText(_warehouse.GetUSSurnames());
+            return _strategy.GenerateText();
         }
 
         /// <summary>
@@ -82,7 +103,16 @@ namespace NameliDotNet
         /// <returns></returns>
         public virtual string AddressLineOne()
         {
-            return _nameGen.CreateName(_warehouse.GetStreetNames());
+            // TODO: I don't believe I've setup streets to be country based
+            IList<string> streets = new List<string>();
+            switch (_locale)
+            {
+                default:
+                    streets = _warehouse.GetStreetNames();
+                    break;
+            }
+            _strategy.SetSourceText(streets);
+            return _strategy.GenerateText();
         }
 
         /// <summary>
@@ -122,7 +152,8 @@ namespace NameliDotNet
         /// <returns></returns>
         public virtual string City()
         {
-            return _nameGen.CreateName(_warehouse.GetUSCityNames());
+            _strategy.SetSourceText(_warehouse.GetUSCityNames());
+            return _strategy.GenerateText();
         }
 
         /// <summary>
@@ -132,6 +163,7 @@ namespace NameliDotNet
         /// <returns></returns>
         public virtual string State()
         {
+            // TODO: this needs to be based off of locales
             IList<string> states = _warehouse.GetUSStates();
             return states[_random.Next(0, states.Count)];
         }
@@ -143,7 +175,7 @@ namespace NameliDotNet
         /// <returns></returns>
         public virtual string GetStateAbbreviation(string state)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("I haven't gotten here yet! Sorry.");
             //if (string.IsNullOrWhiteSpace(state)) throw new ArgumentNullException("No value was passed to Nameli.GetStateAbbreviation method");
             //IList<string> abbrevs = _warehouse.GetUSStateAbbrevs();
             //abbrev = _warehouse.GetUSStateAbbrevs().FirstOrDefault(a => a == abbrev.ToUpper());
@@ -151,7 +183,7 @@ namespace NameliDotNet
 
         public virtual string County()
         {
-            return "Cork";
+            return "Cork"; // heh
         }
 
         /// <summary>
@@ -181,13 +213,20 @@ namespace NameliDotNet
         /// <returns></returns>
         public virtual string StateAbbr()
         {
-            IList<string> abbrevs = _warehouse.GetUSStateAbbrevs();
+            // TODO: more locales need to be implementd
+            IList<string> abbrevs = new List<string>();
+            switch(_locale)
+            {
+                default:
+                    abbrevs = _warehouse.GetUSStateAbbrevs();
+                    break;
+            }
             return abbrevs[_random.Next(0, abbrevs.Count)];
         }
 
         public virtual string GetAbbreviationState(string abbrev)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("In process. Sorry!");
         }
 
         /// <summary>
@@ -218,15 +257,21 @@ namespace NameliDotNet
         /// <returns></returns>
         public virtual string Email(string name = null)
         {
+            // TODO: this needs locale support!
             bool includeNumber = Convert.ToBoolean(_random.Next(0, 2));
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                name = (Convert.ToBoolean(_random.Next(0, 2))) ? FirstName() : LastAndFirst();
-            }
+            if (string.IsNullOrWhiteSpace(name)) name = (Convert.ToBoolean(_random.Next(0, 2))) ? FirstName() : LastAndFirst();
 
             name = name.Replace(", ", "").Replace("-", "");
             if (includeNumber) name += _random.Next(76, 2732).ToString();
-            IList<string> domains = _warehouse.GetUSEmailDomains();
+
+            IList<string> domains = new List<string>();
+            switch (_locale)
+            {
+                default:
+                    domains = _warehouse.GetUSEmailDomains();
+                    break;
+            }
+
             return name = (name + "@" + domains[_random.Next(0, domains.Count)]).ToLower();
         }
 
@@ -287,7 +332,22 @@ namespace NameliDotNet
         // break this out into a specialized class?
         public virtual string CompanyName()
         {
-            return _nameGen.CreateName(_warehouse.GetCompanyNames());
+            _strategy.SetSourceText(_warehouse.GetCompanyNames());
+            return _strategy.GenerateText();
+        }
+
+        /// <summary>
+        /// Generate a number of sentences using Markov chains. Defaults to 4. Not 
+        /// currently setable :(
+        /// </summary>
+        /// <param name="sentenceCount"></param>
+        /// <returns></returns>
+        public virtual string Phrase()
+        {
+            int sentenceCount = 4;
+            _strategy.SetSourceText(_warehouse.BasicEnglishText());
+            // TODO: I need to support the sentenceCount
+            return _strategy.GenerateText();
         }
 
         /// <summary>
@@ -302,7 +362,7 @@ namespace NameliDotNet
             IList<string> nameSeed = new List<string>();
             switch (_locale)
             {
-                case NameliLocale.UnitedStates:
+                default: // eventually this needs to be based on the country
                     switch (gender)
                     {
                         case NameliGender.Male:
@@ -313,20 +373,6 @@ namespace NameliDotNet
                             break;
                         default: // NameliGender.Other
                             nameSeed = _warehouse.GetUSNeutralNames();
-                            break;
-                    }
-                    break;
-                default: // Great Britain
-                    switch (gender)
-                    {
-                        case NameliGender.Male:
-                            throw new NotImplementedException("Haven't gotten here yet!");
-                            break;
-                        case NameliGender.Female:
-                            throw new NotImplementedException("Haven't gotten here yet!");
-                            break;
-                        default: // NameliGender.Other
-                            throw new NotImplementedException("Haven't gotten here yet!");
                             break;
                     }
                     break;
