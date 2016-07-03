@@ -15,9 +15,13 @@ namespace NameliDotNet.Tests
 
         public NameliTest()
         {
-            IStrategy strategy = new NameStrategy();
-            _nameli = new Nameli(strategy, NameliLocale.UnitedStates);
-            _warehouse = new Warehouse();
+            //IStrategy original = new OriginalWordStrategy();
+            //IStrategy name = new NameStrategy();
+            //IStrategy phrase = new PhraseStrategy();
+            _nameli = new Nameli();
+            //_nameli = new Nameli(original); // alternatively
+            //_nameli = new Nameli(original, NameliLocale.UnitedStates); // alternatively
+            _warehouse = new Warehouse(); // this is used for the VariousWord testing towards the bottom
         }
 
         [TestMethod]
@@ -26,6 +30,9 @@ namespace NameliDotNet.Tests
             string maleFirst = _nameli.FirstName(NameliGender.Male);
             if (string.IsNullOrWhiteSpace(maleFirst)) Assert.Fail();
 
+            string secondMaleFirst = _nameli.FirstName(NameliGender.Male); // this tests the male name list being reused
+            if (string.IsNullOrWhiteSpace(secondMaleFirst)) Assert.Fail();
+            
             string femaleFirst = _nameli.FirstName(NameliGender.Female);
             if (string.IsNullOrWhiteSpace(femaleFirst)) Assert.Fail();
 
@@ -105,7 +112,7 @@ namespace NameliDotNet.Tests
         public void Email()
         {
             string email = _nameli.Email();
-            if (string.IsNullOrWhiteSpace(email)) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(email));
 
             List<string> bulk = new List<string>();
             for (int n = 0; n < 300; ++n)
@@ -119,16 +126,16 @@ namespace NameliDotNet.Tests
         public void Addresses()
         {
             string addressLineOne = _nameli.AddressLineOne();
-            if (string.IsNullOrWhiteSpace(addressLineOne)) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(addressLineOne));
 
             string addressLineTwo = _nameli.AddressLineTwo();
-            if (string.IsNullOrWhiteSpace(addressLineTwo)) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(addressLineTwo));
 
             string shipping = _nameli.ShippingAddress();
-            if (string.IsNullOrWhiteSpace(shipping)) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(shipping));
 
             string shippingCountry = _nameli.ShippingAddress(true);
-            if (string.IsNullOrWhiteSpace(shipping)) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(shippingCountry));
             // Sweet! "Ion Street W Lane, MA 23922"
 
             List<string> bulk = new List<string>();
@@ -196,32 +203,25 @@ namespace NameliDotNet.Tests
         }
 
         [TestMethod]
-        public void MarkovPhrase()
+        public void Phrase()
         {
-            string sampleText = "Sometimes fate is like a small sandstorm that keeps changing directions. You change direction but the sandstorm chases you. You turn again, but the storm adjusts. Over and over you play this out, like some ominous dance with death just before dawn. Why? Because this storm isn’t something that blew in from far away, something that has nothing to do with you. This storm is you. Something inside of you. So all you can do is give in to it, step right inside the storm, closing your eyes and plugging up your ears so the sand doesn’t get in, and walk through it, step by step. There’s no sun there, no moon, no direction, no sense of time. Just fine white sand swirling up into the sky like pulverized bones. That’s the kind of sandstorm you need to imagine. " +
-                        "And you really will have to make it through that violent, metaphysical, symbolic storm. No matter how metaphysical or symbolic it might be, make no mistake about it: it will cut through flesh like a thousand razor blades. People will bleed there, and you will bleed too. Hot, red blood. You’ll catch that blood in your hands, your own blood and the blood of others. " +
-                        "And once the storm is over you won’t remember how you made it through, how you managed to survive. You won’t even be sure, in fact, whether the storm is really over. But one thing is certain. When you come out of the storm you won’t be the same person who walked in. That’s what this storm’s all about.";
-            IStrategy phraseStrategy = new PhraseStrategy(sampleText, 2);
-            _nameli.ChangeStrategy(phraseStrategy);
+            //string sampleText = "Sometimes fate is like a small sandstorm that keeps changing directions. You change direction but the sandstorm chases you. You turn again, but the storm adjusts. Over and over you play this out, like some ominous dance with death just before dawn. Why? Because this storm isn’t something that blew in from far away, something that has nothing to do with you. This storm is you. Something inside of you. So all you can do is give in to it, step right inside the storm, closing your eyes and plugging up your ears so the sand doesn’t get in, and walk through it, step by step. There’s no sun there, no moon, no direction, no sense of time. Just fine white sand swirling up into the sky like pulverized bones. That’s the kind of sandstorm you need to imagine. " +
+            //            "And you really will have to make it through that violent, metaphysical, symbolic storm. No matter how metaphysical or symbolic it might be, make no mistake about it: it will cut through flesh like a thousand razor blades. People will bleed there, and you will bleed too. Hot, red blood. You’ll catch that blood in your hands, your own blood and the blood of others. " +
+            //            "And once the storm is over you won’t remember how you made it through, how you managed to survive. You won’t even be sure, in fact, whether the storm is really over. But one thing is certain. When you come out of the storm you won’t be the same person who walked in. That’s what this storm’s all about.";
+            //IStrategy phraseStrategy = new PhraseStrategy(2);
+            //_nameli.ChangeStrategy(phraseStrategy);
             // 2, 1, 1 means 1 word has 50% the next 25% and the other 25%
+
+            // TODO
+            // I need to think about this one
+            // I can't expect people to KNOW to change the strategy here
+            // maybe give it a default strategy but allow it to be overriden
             string text = _nameli.Phrase();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(text));
         }
 
-        [TestMethod]
-        public void AbstractTest()
-        {
-            ////string sampleText = "Sometimes fate is like a small sandstorm that keeps changing directions. You change direction but the sandstorm chases you. You turn again, but the storm adjusts. Over and over you play this out, like some ominous dance with death just before dawn. Why? Because this storm isn’t something that blew in from far away, something that has nothing to do with you. This storm is you. Something inside of you. So all you can do is give in to it, step right inside the storm, closing your eyes and plugging up your ears so the sand doesn’t get in, and walk through it, step by step. There’s no sun there, no moon, no direction, no sense of time. Just fine white sand swirling up into the sky like pulverized bones. That’s the kind of sandstorm you need to imagine. " +
-            ////            "And you really will have to make it through that violent, metaphysical, symbolic storm. No matter how metaphysical or symbolic it might be, make no mistake about it: it will cut through flesh like a thousand razor blades. People will bleed there, and you will bleed too. Hot, red blood. You’ll catch that blood in your hands, your own blood and the blood of others. " +
-            ////            "And once the storm is over you won’t remember how you made it through, how you managed to survive. You won’t even be sure, in fact, whether the storm is really over. But one thing is certain. When you come out of the storm you won’t be the same person who walked in. That’s what this storm’s all about.";
-            ////MarkovPhrases phrases = new MarkovPhrases(sampleText.Split(' '), 2);
-            ////string text = phrases.GenerateText();
-
-            //MarkovWords words = new MarkovWords(new Warehouse().GetUSMaleNames(), 3);
-            //string name = words.GenerateText();
-        }
-
-        [TestMethod]
-        public void MarkovWord()
+        //[TestMethod]
+        public void WordVariations()
         {
             // grab a list of names from the warehouse
             //IList<string> maleNamesUS = new Warehouse().GetUSMaleNames();

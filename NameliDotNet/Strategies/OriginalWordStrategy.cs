@@ -25,6 +25,12 @@ namespace NameliDotNet.Strategies
         {
             if (ReferenceEquals(source, null) || !source.Any()) throw new ArgumentNullException("A list of words or names must be provided to generate a proper result.");
             _samples = source;
+            _chains.Clear();
+        }
+
+        public bool CompareLists(IList<string> newList)
+        {
+            return (newList.SequenceEqual(_samples));
         }
 
         /// <summary>

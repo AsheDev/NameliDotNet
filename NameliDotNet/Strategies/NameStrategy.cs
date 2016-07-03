@@ -36,6 +36,12 @@ namespace NameliDotNet.Strategies
         {
             if (ReferenceEquals(source, null) || !source.Any()) throw new ArgumentNullException("A list of words or names must be provided to generate a proper result.");
             _names = source;
+            _matches.Clear();
+        }
+
+        public bool CompareLists(IList<string> newList)
+        {
+            return (newList.SequenceEqual(_names));
         }
 
         // TODO: this needs to be letter based and not word based
@@ -73,6 +79,7 @@ namespace NameliDotNet.Strategies
 
         public string GenerateText()
         {
+            if (!_matches.Any()) ConstructMatches();
             StringBuilder starterText = new StringBuilder();
             int startIndex = _random.Next(0, _matches.Count - _scope);
             for (int x = 0; x < 1; ++x) // 1 used to be _scope
@@ -96,7 +103,6 @@ namespace NameliDotNet.Strategies
                 string nextLetter = match.FollowedBy[_random.Next(0, match.FollowedBy.Count)];
                 finalText.Append(nextLetter);
 
-
                 if (_scope > 1)
                 {
                     string next = starterText.ToString().Substring(1, starterText.Length - 1);
@@ -109,7 +115,7 @@ namespace NameliDotNet.Strategies
                     starterText.Append(nextLetter);
                 }
             }
-
+            
             return finalText.ToString();
         }
     }

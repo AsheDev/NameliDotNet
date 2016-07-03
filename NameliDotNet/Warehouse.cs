@@ -32,7 +32,8 @@ namespace NameliDotNet
             IList<string> list = new List<string>
             {
                 "United States",
-                "Great Britain"
+                "Great Britain",
+                "South Korea"
             };
             return list;
         }

@@ -23,13 +23,14 @@ namespace NameliDotNet.Strategies
         /// </summary>
         /// <param name="sourceText">Text to base the final result off of</param>
         /// <param name="scope">Defaults to 1. Higher values may return better final results.</param>
-        public PhraseStrategy(string sourceText, int scope = 1)
+        public PhraseStrategy(int scope = 1)
         {
-            if (string.IsNullOrWhiteSpace(sourceText)) throw new ArgumentNullException("PhaseStrategy must implement a valid string of text.");
+            //if (string.IsNullOrWhiteSpace(sourceText)) throw new ArgumentNullException("PhaseStrategy must implement a valid string of text.");
             _scope = (scope < 1) ? 1 : scope;
             _random = new Random();
             // check this a bit more throughly
-            _words = sourceText.Split(' ');
+            //_words = sourceText.Split(' ');
+            _words = new List<string>();
             _matches = new List<Matches>();
             ConstructMatches();
         }
@@ -38,10 +39,17 @@ namespace NameliDotNet.Strategies
         {
             if (ReferenceEquals(source, null) || !source.Any()) throw new ArgumentNullException("A list of words or names must be provided to generate a proper result.");
             _words = source;
+            _matches.Clear();
+        }
+
+        public bool CompareLists(IList<string> newList)
+        {
+            return (newList.SequenceEqual(_words));
         }
 
         public string GenerateText()
         {
+            if (!_matches.Any()) ConstructMatches();
             StringBuilder starterText = new StringBuilder();
             int startIndex = _random.Next(0, _words.Count - _scope);
             for (int x = 0; x < _scope; ++x)
@@ -56,8 +64,11 @@ namespace NameliDotNet.Strategies
             int periodCount = 0;
             for (int n = 0; n < 125; ++n)
             {
-                Matches match = _matches.First(m => m.Text.ToUpper().Equals(starterText.ToString().ToUpper()));
-                // TODO: this could be null and throw
+                Matches match = _matches.FirstOrDefault(m => m.Text.ToUpper().Equals(starterText.ToString().ToUpper()));
+                if(ReferenceEquals(match, null))
+                {
+                    throw new Exception("This needs to be fixed!");
+                }
 
                 string nextWord = match.FollowedBy[_random.Next(0, match.FollowedBy.Count)];
                 if (nextWord.Contains('.')) ++periodCount;
@@ -84,6 +95,7 @@ namespace NameliDotNet.Strategies
 
         private void ConstructMatches()
         {
+            if (_matches.Any()) return;
             for (int n = 0; n < (_words.Count - _scope); ++n)
             {
                 StringBuilder currentText = new StringBuilder();
@@ -107,6 +119,7 @@ namespace NameliDotNet.Strategies
                     _matches.Add(match);
                 }
             }
+            //return _matches;
         }
     }
 }

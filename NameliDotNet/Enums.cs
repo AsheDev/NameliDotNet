@@ -4,7 +4,8 @@
     public enum NameliLocale
     {
         UnitedStates = 0,
-        UnitedKingdom = 1
+        UnitedKingdom = 1,
+        SouthKorea = 2 // reversed surnames
     }
 
     public enum NameliGender

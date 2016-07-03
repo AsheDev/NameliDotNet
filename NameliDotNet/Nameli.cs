@@ -14,11 +14,17 @@ namespace NameliDotNet
         internal IStrategy _strategy;
         internal Warehouse _warehouse;
 
-        public Nameli(IStrategy strategy, NameliLocale locale)
+        private IList<Matches> _firstNames;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="locale"></param>
+        /// <param name="strategy"></param>
+        public Nameli(IStrategy strategy = null, NameliLocale locale = NameliLocale.UnitedStates)
         {
-            if (ReferenceEquals(strategy, null)) throw new ArgumentNullException("Error encountered in Nameli constructor. Strategy may not be null.");
-            _strategy = strategy;
-            _locale = NameliLocale.UnitedStates; // 1st iteration focuses on one region
+            _strategy = (!ReferenceEquals(strategy, null)) ? strategy : new OriginalWordStrategy(); 
+            _locale = NameliLocale.UnitedStates; // This is forced! First iteration focuses on one region
             _random = new Random();
             _warehouse = new Warehouse();
         }
@@ -47,9 +53,9 @@ namespace NameliDotNet
         /// <returns></returns>
         public virtual string FirstName(NameliGender gender = 0)
         {
-            //if (gender == NameliGender.Random) gender = (NameliGender)_random.Next(1, 4);
-            if (gender == NameliGender.Random) gender = NameliGender.Male;
-            _strategy.SetSourceText(DetermineNames(gender));
+            if (gender == NameliGender.Random) gender = (NameliGender)_random.Next(1, 4);
+            IList<string> names = DeterminGenderOfNames(gender);
+            if (!_strategy.CompareLists(names)) _strategy.SetSourceText(DeterminGenderOfNames(gender));
             return _strategy.GenerateText();
         }
 
@@ -59,7 +65,14 @@ namespace NameliDotNet
         /// <returns></returns>
         public virtual string LastName()
         {
-            _strategy.SetSourceText(_warehouse.GetUSSurnames());
+            IList<string> seed;
+            switch(_locale)
+            {
+                default: // USA
+                    seed = _warehouse.GetUSSurnames();
+                    break;
+            }
+            if (!_strategy.CompareLists(seed)) _strategy.SetSourceText(seed);
             return _strategy.GenerateText();
         }
 
@@ -71,7 +84,7 @@ namespace NameliDotNet
         public virtual string FirstAndLast(NameliGender gender = 0)
         {
             if (gender == NameliGender.Random) gender = (NameliGender)_random.Next(1, 4);
-            return FirstName(gender) + " " + LastName();
+            return FirstName(gender) + " " + LastName(); // could be different for SouthKorea
         }
 
         /// <summary>
@@ -82,7 +95,7 @@ namespace NameliDotNet
         public virtual string LastAndFirst(NameliGender gender = 0)
         {
             if (gender == NameliGender.Random) gender = (NameliGender)_random.Next(1, 4);
-            return LastName() + ", " + FirstName(gender);
+            return LastName() + ", " + FirstName(gender); // could be different for SouthKorea
         }
 
         /// <summary>
@@ -111,7 +124,7 @@ namespace NameliDotNet
                     streets = _warehouse.GetStreetNames();
                     break;
             }
-            _strategy.SetSourceText(streets);
+            if (!_strategy.CompareLists(streets)) _strategy.SetSourceText(streets);
             return _strategy.GenerateText();
         }
 
@@ -152,7 +165,14 @@ namespace NameliDotNet
         /// <returns></returns>
         public virtual string City()
         {
-            _strategy.SetSourceText(_warehouse.GetUSCityNames());
+            IList<string> seed = new List<string>();
+            switch (_locale)
+            {
+                default: // defaults to USA currently
+                    seed = _warehouse.GetUSCityNames();
+                    break;
+            }
+            if (!_strategy.CompareLists(seed)) _strategy.SetSourceText(seed);
             return _strategy.GenerateText();
         }
 
@@ -163,9 +183,14 @@ namespace NameliDotNet
         /// <returns></returns>
         public virtual string State()
         {
-            // TODO: this needs to be based off of locales
-            IList<string> states = _warehouse.GetUSStates();
-            return states[_random.Next(0, states.Count)];
+            IList<string> seed = new List<string>();
+            switch (_locale)
+            {
+                default: // defaults to USA currently
+                    seed = _warehouse.GetUSStates();
+                    break;
+            }
+            return seed[_random.Next(0, seed.Count)];
         }
 
         /// <summary>
@@ -213,15 +238,14 @@ namespace NameliDotNet
         /// <returns></returns>
         public virtual string StateAbbr()
         {
-            // TODO: more locales need to be implementd
-            IList<string> abbrevs = new List<string>();
+            IList<string> seed;
             switch(_locale)
             {
-                default:
-                    abbrevs = _warehouse.GetUSStateAbbrevs();
+                default: // defaults to USA
+                    seed = _warehouse.GetUSStateAbbrevs();
                     break;
             }
-            return abbrevs[_random.Next(0, abbrevs.Count)];
+            return seed[_random.Next(0, seed.Count)];
         }
 
         public virtual string GetAbbreviationState(string abbrev)
@@ -264,10 +288,10 @@ namespace NameliDotNet
             name = name.Replace(", ", "").Replace("-", "");
             if (includeNumber) name += _random.Next(76, 2732).ToString();
 
-            IList<string> domains = new List<string>();
+            IList<string> domains;
             switch (_locale)
             {
-                default:
+                default: // defaults to USA
                     domains = _warehouse.GetUSEmailDomains();
                     break;
             }
@@ -332,21 +356,26 @@ namespace NameliDotNet
         // break this out into a specialized class?
         public virtual string CompanyName()
         {
-            _strategy.SetSourceText(_warehouse.GetCompanyNames());
+            // Do I want to localize this? Probably in the future...
+            IList<string> seed = _warehouse.GetCompanyNames();
+            if (!_strategy.CompareLists(seed)) _strategy.SetSourceText(seed);
             return _strategy.GenerateText();
         }
 
         /// <summary>
         /// Generate a number of sentences using Markov chains. Defaults to 4. Not 
-        /// currently setable :(
+        /// currently settable :(
         /// </summary>
-        /// <param name="sentenceCount"></param>
+        /// <param name="strategy">The strategy to be used to generate phrases. The included 
+        /// PhraseStrategy class is purposefully built for this operation.</param>
         /// <returns></returns>
-        public virtual string Phrase()
+        public virtual string Phrase(IStrategy strategy = null)
         {
-            int sentenceCount = 4;
-            _strategy.SetSourceText(_warehouse.BasicEnglishText());
-            // TODO: I need to support the sentenceCount
+            if (ReferenceEquals(strategy, null)) _strategy = new PhraseStrategy(2);
+            int sentenceCount = 4; // TODO: I need to support the sentenceCount
+
+            IList<string> seed = _warehouse.BasicEnglishText();
+            if (!_strategy.CompareLists(seed)) _strategy.SetSourceText(seed);
             return _strategy.GenerateText();
         }
 
@@ -357,12 +386,12 @@ namespace NameliDotNet
         /// <param name="locale"></param>
         /// <param name="gender"></param>
         /// <returns></returns>
-        private IList<string> DetermineNames(NameliGender gender)
+        private IList<string> DeterminGenderOfNames(NameliGender gender)
         {
             IList<string> nameSeed = new List<string>();
             switch (_locale)
             {
-                default: // eventually this needs to be based on the country
+                default: // USA. Eventually this needs to be based on the country
                     switch (gender)
                     {
                         case NameliGender.Male:
