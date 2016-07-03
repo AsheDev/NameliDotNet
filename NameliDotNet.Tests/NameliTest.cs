@@ -15,29 +15,30 @@ namespace NameliDotNet.Tests
 
         public NameliTest()
         {
+            /* Some of the options that are available to choose from by default */
+
             //IStrategy original = new OriginalWordStrategy();
             //IStrategy name = new NameStrategy();
             //IStrategy phrase = new PhraseStrategy();
             _nameli = new Nameli();
             //_nameli = new Nameli(original); // alternatively
             //_nameli = new Nameli(original, NameliLocale.UnitedStates); // alternatively
-            _warehouse = new Warehouse(); // this is used for the VariousWord testing towards the bottom
         }
 
         [TestMethod]
         public void FirstName()
         {
             string maleFirst = _nameli.FirstName(NameliGender.Male);
-            if (string.IsNullOrWhiteSpace(maleFirst)) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(maleFirst));
 
             string secondMaleFirst = _nameli.FirstName(NameliGender.Male); // this tests the male name list being reused
-            if (string.IsNullOrWhiteSpace(secondMaleFirst)) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(secondMaleFirst));
             
             string femaleFirst = _nameli.FirstName(NameliGender.Female);
-            if (string.IsNullOrWhiteSpace(femaleFirst)) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(femaleFirst));
 
             string other = _nameli.FirstName(NameliGender.Other);
-            if (string.IsNullOrWhiteSpace(other)) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(other));
 
             List<string> bulk = new List<string>();
             for (int n = 0; n < 300; ++n)
@@ -51,7 +52,7 @@ namespace NameliDotNet.Tests
         public void LastName()
         {
             string lastname = _nameli.LastName();
-            if (string.IsNullOrWhiteSpace(lastname)) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(lastname));
 
             List<string> bulk = new List<string>();
             for (int n = 0; n < 300; ++n)
@@ -65,40 +66,40 @@ namespace NameliDotNet.Tests
         public void FirstAndLast()
         {
             string firstAndLast = _nameli.FirstAndLast(NameliGender.Male);
-            if (string.IsNullOrWhiteSpace(firstAndLast)) Assert.Fail();
-            if (!firstAndLast.Contains(" ")) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(firstAndLast));
+            Assert.IsTrue(firstAndLast.Contains(" "));
         }
 
         [TestMethod]
         public void LastAndFirst()
         {
             string lastAndFirst = _nameli.LastAndFirst(NameliGender.Female);
-            if (string.IsNullOrWhiteSpace(lastAndFirst)) Assert.Fail();
-            if (!lastAndFirst.Contains(" ")) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(lastAndFirst));
+            Assert.IsTrue(lastAndFirst.Contains(", "));
         }
 
         [TestMethod]
         public void StateAbbrev()
         {
             string abbrev = _nameli.StateAbbr();
-            if (string.IsNullOrWhiteSpace(abbrev)) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(abbrev));
         }
 
         [TestMethod]
         public void State()
         {
             string state = _nameli.State();
-            if (string.IsNullOrWhiteSpace(state)) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(state));
         }
 
         [TestMethod]
         public void PhoneNumber()
         {
             string phone = _nameli.Phone();
-            if (string.IsNullOrWhiteSpace(phone)) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(phone));
 
             phone = _nameli.Phone(true);
-            if (string.IsNullOrWhiteSpace(phone)) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(phone));
 
             List<string> bulk = new List<string>();
             for (int n = 0; n < 300; ++n)
@@ -150,7 +151,7 @@ namespace NameliDotNet.Tests
         public void City()
         {
             string city = _nameli.City();
-            if (string.IsNullOrWhiteSpace(city)) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(city));
 
             List<string> bulk = new List<string>();
             for (int n = 0; n < 300; ++n)
@@ -164,8 +165,8 @@ namespace NameliDotNet.Tests
         public void SocialSecurityNumber()
         {
             string ssn = _nameli.SocialSecurityNumber();
-            Assert.AreNotEqual(ssn.Length, 0);
-            Assert.AreEqual(ssn.Length, 11);
+            Assert.IsTrue(ssn.Length > 0);
+            Assert.IsTrue(ssn.Length == 11);
 
             List<string> bulk = new List<string>();
             for (int n = 0; n < 300; ++n)
@@ -192,7 +193,7 @@ namespace NameliDotNet.Tests
         public void CompanyName()
         {
             string name = _nameli.CompanyName();
-            if (string.IsNullOrWhiteSpace(name)) Assert.Fail();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(name));
 
             List<string> bulk = new List<string>();
             for (int n = 0; n < 300; ++n)
@@ -223,26 +224,29 @@ namespace NameliDotNet.Tests
         //[TestMethod]
         public void WordVariations()
         {
-            // grab a list of names from the warehouse
-            //IList<string> maleNamesUS = new Warehouse().GetUSMaleNames();
+            /* I was using this to test the different strategies against themselves.
+             * */
+
+            //// grab a list of names from the warehouse
+            ////IList<string> maleNamesUS = new Warehouse().GetUSMaleNames();
             
-            IStrategy nameStrategy = new NameStrategy(3); // 1 is *really* bad
-            Nameli nameli = new Nameli(nameStrategy, NameliLocale.UnitedStates);
+            //IStrategy nameStrategy = new NameStrategy(3); // 1 is *really* bad
+            //Nameli nameli = new Nameli(nameStrategy, NameliLocale.UnitedStates);
 
-            IList<string> allTheNames = new List<string>();
-            //for (int n = 0; n < 300; ++n) allTheNames.Add(nameli.);
+            //IList<string> allTheNames = new List<string>();
+            ////for (int n = 0; n < 300; ++n) allTheNames.Add(nameli.);
 
-            // use my original Markov code
-            List<string> bulk = new List<string>();
-            for (int n = 0; n < 300; ++n) bulk.Add(_nameli.FirstName(NameliGender.Male));
+            //// use my original Markov code
+            //List<string> bulk = new List<string>();
+            //for (int n = 0; n < 300; ++n) bulk.Add(_nameli.FirstName(NameliGender.Male));
 
-            // OR
-            nameStrategy = new OriginalWordStrategy();
-            nameStrategy.SetSourceText(_warehouse.GetUSMaleNames()); // HMMM WHAT TO DO HERE
-            nameli.ChangeStrategy(new OriginalWordStrategy());
+            //// OR
+            //nameStrategy = new OriginalWordStrategy();
+            //nameStrategy.SetSourceText(_warehouse.GetUSMaleNames()); // HMMM WHAT TO DO HERE
+            //nameli.ChangeStrategy(new OriginalWordStrategy());
             
-            List<string> bulk2 = new List<string>();
-            for (int n = 0; n < 300; ++n) bulk2.Add(nameli.FirstName(NameliGender.Male));
+            //List<string> bulk2 = new List<string>();
+            //for (int n = 0; n < 300; ++n) bulk2.Add(nameli.FirstName(NameliGender.Male));
         }
     }
 }
