@@ -11,8 +11,8 @@ namespace NameliDotNet
     {
         protected NameliLocale _locale;
         protected Random _random;
-        internal IStrategy _strategy;
-        internal Warehouse _warehouse;
+        protected IStrategy _strategy;
+        protected Warehouse _warehouse;
 
         /// <summary>
         /// The Nameli generator class. The strategy and locale options default to USA to 
@@ -20,9 +20,33 @@ namespace NameliDotNet
         /// </summary>
         /// <param name="locale">The locale to be used when generating random text.</param>
         /// <param name="strategy">The strategy, or algorithm, to be employed in generating random text.</param>
-        public Nameli(IStrategy strategy = null, NameliLocale locale = NameliLocale.UnitedStates)
+        public Nameli()
         {
-            _strategy = (!ReferenceEquals(strategy, null)) ? strategy : new OriginalWordStrategy(); 
+            _strategy = new OriginalWordStrategy(); 
+            _locale = NameliLocale.UnitedStates; // This is forced! First iteration focuses on one region
+            _random = new Random();
+            _warehouse = new Warehouse();
+        }
+
+        public Nameli(IStrategy strategy)
+        {
+            _strategy = (!ReferenceEquals(strategy, null)) ? strategy : new OriginalWordStrategy();
+            _locale = NameliLocale.UnitedStates; // This is forced! First iteration focuses on one region
+            _random = new Random();
+            _warehouse = new Warehouse();
+        }
+
+        public Nameli(NameliLocale locale)
+        {
+            _strategy = new OriginalWordStrategy();
+            _locale = NameliLocale.UnitedStates; // This is forced! First iteration focuses on one region
+            _random = new Random();
+            _warehouse = new Warehouse();
+        }
+
+        public Nameli(IStrategy strategy, NameliLocale locale)
+        {
+            _strategy = (!ReferenceEquals(strategy, null)) ? strategy : new OriginalWordStrategy();
             _locale = NameliLocale.UnitedStates; // This is forced! First iteration focuses on one region
             _random = new Random();
             _warehouse = new Warehouse();

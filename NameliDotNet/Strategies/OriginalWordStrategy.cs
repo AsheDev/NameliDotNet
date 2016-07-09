@@ -45,34 +45,13 @@ namespace NameliDotNet.Strategies
             _minLength = 4;
             _order = ((_random.Next(0, 2) == 1)) ? 4 + 1 : 4 - 1; // 4 seems to be a sweet spot so we mix it up by doing plus or minus 1
             ConstructChains();
-            //if(_chains.FirstOrDefault().Key.Length != _order)
-            //{
 
-            //}
-
-
-            // this is a weird bug :|
+            // this is a weird bug :| I'll deal with it later.
             while(_chains.FirstOrDefault().Key.Length != _order)
             {
                 _chains.Clear();
                 ConstructChains();
             }
-
-
-            if (_chains.FirstOrDefault().Key.Length != _order)
-            {
-                int flag = 0;
-                ++flag;
-                //_chains.Clear();
-                //ConstructChains();
-                //if (_chains.FirstOrDefault().Key.Length != _order)
-                //{
-                //    int test = 0;
-                //    ++test;
-                //}
-            }
-
-
             return NewName().FirstCharToUpper();
         }
 
